@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
+
+import 'home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,7 +12,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoginPage(),
     );
@@ -17,32 +20,52 @@ class MyApp extends StatelessWidget {
 }
 
 class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Background color
-          Container(
-            color: Colors.red,
-          ),
-          const Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 80.0),
-              child: Text(
-                'Welcome',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+          // Background image with blur effect
+          Stack(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/background.png'),
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
+              ),
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    color: Colors.black.withOpacity(0.2),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // Welcome image in the middle above login form
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.20,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Image.asset(
+                'assets/images/Welcome.png',
+                width: 250,
               ),
             ),
           ),
+          // Login form fixed at the bottom
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
+              width: double.infinity,
               padding: const EdgeInsets.all(16.0),
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -50,11 +73,12 @@ class LoginPage extends StatelessWidget {
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start, // Align to left
                 children: [
                   const Text(
                     'Selamat Datang!',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -62,7 +86,7 @@ class LoginPage extends StatelessWidget {
                   const Text(
                     'Silahkan login untuk melanjutkan',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 12,
                       color: Colors.grey,
                     ),
                   ),
@@ -101,13 +125,21 @@ class LoginPage extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor: const Color(0xFFEC0000),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        // Aksi untuk pindah ke halaman Home
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          ),
+                        );
+                      },
                       child: const Text(
                         'Masuk',
                         style: TextStyle(
