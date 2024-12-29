@@ -1,20 +1,24 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:iot_sphere/profile.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
-          // Background gambar untuk layout pertama
+          // Layout pertama: Background image
+          // Layout pertama: Background image dengan blur filter
           Positioned.fill(
-            child: Column(
+            child: Stack(
               children: [
-                // Layout pertama: Background image
                 Container(
-                  height: 100,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
@@ -23,169 +27,54 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Layout kedua: Background putih
-                Expanded(
+                BackdropFilter(
+                  filter:
+                      ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Efek blur
                   child: Container(
-                    color: Colors.white,
+                    color: Colors.black
+                        .withOpacity(0.2), // Warna overlay (opsional)
                   ),
                 ),
-              ],
-            ),
-          ),
-          Column(
-            children: [
-              // Layout pertama: Navigasi atas
-              SizedBox(
-                height: 100,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: 16,
-                      left: 16,
-                      right: 16,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CustomButton(
-                            icon: Icons.history,
-                            label: "Riwayat",
-                            isSelected: false,
-                            onPressed: () {
-                              // Aksi untuk Riwayat
-                            },
-                          ),
-                          CustomButton(
-                            icon: Icons.home,
-                            label: "Beranda",
-                            isSelected: true,
-                            onPressed: () {
-                              // Aksi untuk Beranda
-                            },
-                          ),
-                          CustomButton(
-                            icon: Icons.person,
-                            label: "Profile",
-                            isSelected: false,
-                            onPressed: () {
-                              // Aksi untuk Profil
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Layout kedua: Konten utama
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
+                // Layout pertama: Navigasi atas
+                SizedBox(
+                  child: Stack(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      Positioned(
+                        top: MediaQuery.of(context).size.height * 0.05,
+                        left: 40,
+                        right: 40,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // Informasi Pengguna
-                            Row(
-                              children: [
-                                const CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: Colors.white,
-                                  child: Icon(Icons.person,
-                                      size: 40, color: Colors.red),
-                                ),
-                                const SizedBox(width: 16),
-                                const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Baskara Valeandra',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      '990818280091273',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                                IconButton(
-                                  icon: const Icon(
-                                      Icons.notifications_active_outlined,
-                                      color: Colors.black),
-                                  onPressed: () {
-                                    // Aksi untuk notifikasi
-                                  },
-                                ),
-                              ],
+                            CustomButton(
+                              icon: Icons.history,
+                              label: "Riwayat",
+                              isSelected: false,
+                              onPressed: () {
+                                // Aksi untuk Riwayat
+                              },
                             ),
-                            const SizedBox(height: 16),
-                            // Tombol QR Code dengan panjang simetris
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  // Aksi untuk QR Code
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.red,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                            CustomButton(
+                              icon: Icons.home,
+                              label: "Beranda",
+                              isSelected: true,
+                              onPressed: () {
+                                // Aksi untuk Beranda
+                              },
+                            ),
+                            CustomButton(
+                              icon: Icons.person,
+                              label: "Profile",
+                              isSelected: false,
+                              onPressed: () {
+                                // Aksi untuk pindah ke halaman Home
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ProfilePage(),
                                   ),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                ),
-                                icon: const Icon(Icons.qr_code_scanner),
-                                label: const Text('Sambungkan Dengan QR Code'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      // Daftar Perangkat
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Perangkat Di Sekitar Anda',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 16),
-                            DeviceCard(
-                              deviceName: 'IOTSphere-01',
-                              status: 'Active',
-                              statusColor: Colors.green,
-                              macAddress: '25:dc:n3:j5:l1:B4',
-                              security: 'WPA2',
-                            ),
-                            DeviceCard(
-                              deviceName: 'IOTSphere-02',
-                              status: 'Inactive',
-                              statusColor: Colors.red,
-                              macAddress: 'B4:25:dc:n3:j5:l1',
-                              security: 'WPA2',
-                            ),
-                            DeviceCard(
-                              deviceName: 'SSID-01',
-                              status: 'Restarting',
-                              statusColor: Colors.orange,
-                              macAddress: '25:ln:n3:j5:lm:3',
-                              security: 'Open',
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -193,8 +82,131 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
+              ],
+            ),
+          ),
+          // Layout kedua dengan border radius
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(15)),
+              child: Container(
+                height: screenHeight * 0.85, // Layout kedua menempati 85% layar
+                color: Colors.white,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        // Konten di dalam layout kedua
+                        Row(
+                          children: [
+                            const CircleAvatar(
+                              radius: 30,
+                              backgroundColor: Colors.white,
+                              child: Icon(Icons.person_2_outlined,
+                                  size: 40, color: Colors.red),
+                            ),
+                            const SizedBox(width: 16),
+                            const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Baskara Valeandra',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '990818280091273',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            IconButton(
+                              icon: const Icon(
+                                  Icons.notifications_active_outlined,
+                                  color: Colors.black),
+                              onPressed: () {
+                                // Aksi untuk notifikasi
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              // Aksi untuk QR Code
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              side: const BorderSide(
+                                // Tambahkan properti ini
+                                color: Colors.red, // Warna border
+                                width: 0.5, // Lebar border
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                            icon: const Icon(Icons.qr_code_scanner),
+                            label: const Text('Sambungkan Dengan QR Code'),
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        const Align(
+                          alignment: Alignment
+                              .centerLeft, // Pastikan teks berada di kiri
+                          child: Text(
+                            'Perangkat Di Sekitar Anda',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left, // Atur text alignment
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        // Daftar perangkat
+                        const DeviceCard(
+                          deviceName: 'IOTSphere-01',
+                          status: 'Active',
+                          statusColor: Colors.green,
+                          macAddress: '25:dc:n3:j5:l1:B4',
+                          security: 'WPA2',
+                        ),
+                        const DeviceCard(
+                          deviceName: 'IOTSphere-02',
+                          status: 'Inactive',
+                          statusColor: Colors.red,
+                          macAddress: 'B4:25:dc:n3:j5:l1',
+                          security: 'WPA2',
+                        ),
+                        const DeviceCard(
+                          deviceName: 'SSID-01',
+                          status: 'Restarting',
+                          statusColor: Colors.orange,
+                          macAddress: '25:ln:n3:j5:lm:3',
+                          security: 'Open',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ],
+            ),
           ),
         ],
       ),
@@ -219,26 +231,34 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? Colors.white : Colors.red.shade800,
-        foregroundColor: isSelected ? Colors.red : Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-        elevation: isSelected ? 6 : 2,
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 20),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+    return SizedBox(
+      width: 105, // Lebar tombol tetap
+      height: 35, // Tinggi tombol tetap
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? Colors.white : const Color(0xFF810303),
+          foregroundColor: isSelected ? Colors.red : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
           ),
-        ],
+          elevation: isSelected ? 6 : 2,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 20),
+            const SizedBox(width: 6), // Jarak antara ikon dan label
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -270,12 +290,25 @@ class DeviceCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(
-              Icons.wifi,
-              color: statusColor,
-              size: 30,
+            Column(
+              children: [
+                Icon(
+                  Icons.wifi,
+                  color: statusColor,
+                  size: 30,
+                ),
+                const SizedBox(height: 4), // Jarak antara ikon dan teks
+                Text(
+                  status,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: statusColor,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 16),
+            const SizedBox(
+                width: 16), // Jarak antara kolom Wi-Fi dan konten lainnya
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,13 +320,7 @@ class DeviceCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    status,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: statusColor,
-                    ),
-                  ),
+                  const SizedBox(height: 16),
                   Text(
                     macAddress,
                     style: const TextStyle(
@@ -304,15 +331,14 @@ class DeviceCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            Row(
               children: [
                 Icon(
-                  security == 'Open' ? Icons.lock_open : Icons.lock,
+                  security == 'Open' ? Icons.lock_open : Icons.lock_outline,
                   color: Colors.grey,
                   size: 16,
                 ),
+                const SizedBox(width: 4), // Jarak kecil antara ikon dan teks
                 Text(
                   security,
                   style: const TextStyle(
