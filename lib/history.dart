@@ -2,12 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:iot_sphere/device_info.dart';
-import 'package:iot_sphere/history.dart';
+import 'package:iot_sphere/home.dart';
 import 'package:iot_sphere/profile.dart';
 import 'package:iot_sphere/scan_qr.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HistoryPage extends StatelessWidget {
+  const HistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,15 +53,23 @@ class HomePage extends StatelessWidget {
                               CustomButton(
                                 icon: Icons.history,
                                 label: "Riwayat",
-                                isSelected: false,
+                                isSelected: true,
                                 onPressed: () {
                                   // Aksi untuk Riwayat
+                                },
+                              ),
+                              CustomButton(
+                                icon: Icons.home,
+                                label: "Beranda",
+                                isSelected: false,
+                                onPressed: () {
+                                  // Aksi untuk Beranda
                                   Navigator.pushReplacement(
                                     context,
                                     PageRouteBuilder(
                                       pageBuilder: (context, animation,
                                               secondaryAnimation) =>
-                                          HistoryPage(),
+                                          HomePage(),
                                       transitionDuration: Duration.zero,
                                       reverseTransitionDuration: Duration.zero,
                                       transitionsBuilder: (context, animation,
@@ -70,14 +78,6 @@ class HomePage extends StatelessWidget {
                                       },
                                     ),
                                   );
-                                },
-                              ),
-                              CustomButton(
-                                icon: Icons.home,
-                                label: "Beranda",
-                                isSelected: true,
-                                onPressed: () {
-                                  // Aksi untuk Beranda
                                 },
                               ),
                               CustomButton(
@@ -126,79 +126,6 @@ class HomePage extends StatelessWidget {
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          // Konten di dalam layout kedua
-                          Row(
-                            children: [
-                              const CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Colors.white,
-                                child: Icon(Icons.person_2_outlined,
-                                    size: 40, color: Colors.red),
-                              ),
-                              const SizedBox(width: 16),
-                              const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Baskara Valeandra',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    '990818280091273',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Spacer(),
-                              IconButton(
-                                icon: const Icon(
-                                    Icons.notifications_active_outlined,
-                                    color: Colors.black),
-                                onPressed: () {
-                                  // Aksi untuk notifikasi
-                                },
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const ScanQRPage(),
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.red,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                side: const BorderSide(
-                                  // Tambahkan properti ini
-                                  color: Colors.red, // Warna border
-                                  width: 0.5, // Lebar border
-                                ),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12),
-                              ),
-                              icon: const Icon(Icons.qr_code_scanner),
-                              label: const Text('Sambungkan Dengan QR Code'),
-                            ),
-                          ),
-                          const SizedBox(height: 30),
                           const Align(
                             alignment: Alignment
                                 .centerLeft, // Pastikan teks berada di kiri
@@ -288,55 +215,6 @@ void navigateToDevice3(BuildContext context) {
 }
 
 // Widget CustomButton
-class CustomButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isSelected;
-  final VoidCallback onPressed;
-
-  const CustomButton({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.isSelected,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 105, // Lebar tombol tetap
-      height: 35, // Tinggi tombol tetap
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? Colors.white : const Color(0xFF810303),
-          foregroundColor: isSelected ? Colors.red : Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          elevation: isSelected ? 6 : 2,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 20),
-            const SizedBox(width: 6), // Jarak antara ikon dan label
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class DeviceCard extends StatelessWidget {
   final String deviceName;
   final String status;
@@ -426,6 +304,56 @@ class DeviceCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+// Widget CustomButton
+class CustomButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onPressed;
+
+  const CustomButton({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 105, // Lebar tombol tetap
+      height: 35, // Tinggi tombol tetap
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? Colors.white : const Color(0xFF810303),
+          foregroundColor: isSelected ? Colors.red : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          elevation: isSelected ? 6 : 2,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 20),
+            const SizedBox(width: 6), // Jarak antara ikon dan label
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

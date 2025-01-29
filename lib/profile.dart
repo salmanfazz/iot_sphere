@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:iot_sphere/home.dart';
 import 'package:iot_sphere/main.dart';
 
+import 'history.dart';
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -12,7 +14,8 @@ class ProfilePage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: Stack(
+      body: SafeArea(
+          child: Stack(
         children: [
           // Layout pertama: Background image dengan blur filter
           Positioned.fill(
@@ -41,8 +44,8 @@ class ProfilePage extends StatelessWidget {
                     children: [
                       Positioned(
                         top: MediaQuery.of(context).size.height * 0.05,
-                        left: 40,
-                        right: 40,
+                        left: 25,
+                        right: 25,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -51,7 +54,20 @@ class ProfilePage extends StatelessWidget {
                               label: "Riwayat",
                               isSelected: false,
                               onPressed: () {
-                                // Aksi untuk Riwayat
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        HistoryPage(),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return child;
+                                    },
+                                  ),
+                                );
                               },
                             ),
                             CustomButton(
@@ -60,10 +76,18 @@ class ProfilePage extends StatelessWidget {
                               isSelected: false,
                               onPressed: () {
                                 // Aksi untuk pindah ke halaman home
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const HomePage(),
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        HomePage(),
+                                    transitionDuration: Duration.zero,
+                                    reverseTransitionDuration: Duration.zero,
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return child;
+                                    },
                                   ),
                                 );
                               },
@@ -285,11 +309,10 @@ class ProfilePage extends StatelessWidget {
                           child: ElevatedButton.icon(
                             onPressed: () {
                               // Aksi untuk Sign Out
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const LoginPage(),
-                                ),
+                                    builder: (context) => const LoginPage()),
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -327,7 +350,7 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      )),
     );
   }
 }
