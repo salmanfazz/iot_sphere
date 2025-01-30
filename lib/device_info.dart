@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class DeviceInfoPage extends StatefulWidget {
-  const DeviceInfoPage({Key? key, required String deviceName})
-      : super(key: key);
+  final String deviceName;
+  final String macAddress;
+  final int level;
+  const DeviceInfoPage({
+    Key? key,
+    required this.deviceName,
+    required this.macAddress,
+    required this.level,
+  }) : super(key: key);
 
   @override
   State<DeviceInfoPage> createState() => _DeviceInfoPageState();
@@ -15,7 +22,7 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
     return Scaffold(
       body: Column(
         children: [
-          // Red App Bar
+          // AppBar
           Container(
             color: Colors.red,
             padding:
@@ -26,20 +33,20 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () => Navigator.pop(context),
                 ),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "Network-01",
-                        style: TextStyle(
+                        widget.deviceName, // Ambil nama device dari widget
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        "Ruang Tengah lt.1",
+                      const Text(
+                        "Ruang Tengah lt.1", // Bisa diganti dengan data dinamis
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -65,7 +72,7 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
                   children: [
                     // Status Message
                     Container(
-                      margin: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.all(8), // Mengurangi margin
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.green[50],
@@ -86,7 +93,8 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
 
                     // Signal Strength Card
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 8), // Hanya margin horizontal
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -109,7 +117,8 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(
+                              height: 8), // Kurangi jarak antara teks dan ikon
                           const Icon(
                             Icons.computer_rounded,
                             size: 24,
@@ -121,7 +130,7 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
                               children: [
                                 SizedBox(
                                   width: double.infinity,
-                                  height: 120,
+                                  height: 120, // Ukuran lingkaran progres
                                   child: CustomPaint(
                                     painter: CircularProgressPainter(
                                       progress: 0.8, // 80% progress for example
@@ -130,19 +139,20 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
                                     ),
                                   ),
                                 ),
-                                const Column(
+                                Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      '120',
-                                      style: TextStyle(
+                                      widget.level
+                                          .toString(), // Display the actual signal level
+                                      style: const TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.black87,
                                       ),
                                     ),
-                                    Text(
-                                      'DBS',
+                                    const Text(
+                                      'DBM',
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.black54,
@@ -153,6 +163,7 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
                               ],
                             ),
                           ),
+                          // Hapus SizedBox di sini agar tidak ada jarak di bawah CircularProgressBar
                           Container(
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -176,7 +187,7 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
 
                     // Test Signal Button
                     Container(
-                      margin: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.all(8), // Mengurangi margin
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton.icon(
@@ -194,7 +205,7 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
                     ),
 
                     Container(
-                      margin: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.all(8), // Mengurangi margin
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton.icon(
@@ -213,7 +224,8 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
 
                     // WiFi Information
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4), // Lebih rapat
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -224,7 +236,7 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 8), // Mengurangi jarak
                           _buildInfoRow("Nomor Seri", "261120240015"),
                           _buildInfoRow("MAC", "25:dc:n3:j5:l1:B4"),
                           _buildInfoRow("IP", "128.180.65.12"),
@@ -235,7 +247,7 @@ class _DeviceInfoPageState extends State<DeviceInfoPage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10), // Jarak bawah yang lebih kecil
                   ],
                 ),
               ),

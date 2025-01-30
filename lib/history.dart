@@ -146,8 +146,8 @@ class HistoryPage extends StatelessWidget {
                             statusColor: Colors.green,
                             macAddress: '25:dc:n3:j5:l1:B4',
                             security: 'WPA2',
-                            onTap: () => navigateToDevice1(
-                                context), // Fungsi navigasi untuk perangkat 1
+                            onTap: () =>
+                                (context), // Fungsi navigasi untuk perangkat 1
                           ),
                           DeviceCard(
                             deviceName: 'IOTSphere-02',
@@ -155,8 +155,8 @@ class HistoryPage extends StatelessWidget {
                             statusColor: Colors.red,
                             macAddress: 'B4:25:dc:n3:j5:l1',
                             security: 'WPA2',
-                            onTap: () => navigateToDevice2(
-                                context), // Fungsi navigasi untuk perangkat 2
+                            onTap: () =>
+                                (context), // Fungsi navigasi untuk perangkat 2
                           ),
                           DeviceCard(
                             deviceName: 'SSID-01',
@@ -164,8 +164,8 @@ class HistoryPage extends StatelessWidget {
                             statusColor: Colors.orange,
                             macAddress: '25:ln:n3:j5:lm:3',
                             security: 'Open',
-                            onTap: () => navigateToDevice3(
-                                context), // Fungsi navigasi untuk perangkat 3
+                            onTap: () =>
+                                (context), // Fungsi navigasi untuk perangkat 3
                           ),
                         ],
                       ),
@@ -179,39 +179,6 @@ class HistoryPage extends StatelessWidget {
       ),
     );
   }
-}
-
-void navigateToDevice1(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => const DeviceInfoPage(
-        deviceName: 'IOTSphere-01',
-      ),
-    ),
-  );
-}
-
-void navigateToDevice2(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => const DeviceInfoPage(
-        deviceName: 'IOTSphere-02',
-      ),
-    ),
-  );
-}
-
-void navigateToDevice3(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => const DeviceInfoPage(
-        deviceName: 'SSID-01',
-      ),
-    ),
-  );
 }
 
 // Widget CustomButton

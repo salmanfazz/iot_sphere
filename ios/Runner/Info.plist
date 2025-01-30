@@ -47,5 +47,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>App membutuhkan akses ke lokasi untuk mengakses jaringan WiFi.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>App membutuhkan akses ke lokasi untuk mengakses jaringan WiFi.</string>
 </dict>
 </plist>

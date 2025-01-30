@@ -1,13 +1,63 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:iot_sphere/device_info.dart';
-import 'package:iot_sphere/history.dart';
-import 'package:iot_sphere/profile.dart';
-import 'package:iot_sphere/scan_qr.dart';
+import 'package:wifi_iot/wifi_iot.dart';
 
-class HomePage extends StatelessWidget {
+import 'device_info.dart';
+import 'history.dart';
+import 'profile.dart';
+
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<WifiNetwork?> availableNetworks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    scanWifiNetworks();
+  }
+
+  Future<void> scanWifiNetworks() async {
+    bool isWifiEnabled = await WiFiForIoTPlugin.isEnabled();
+
+    if (isWifiEnabled) {
+      try {
+        List<WifiNetwork?> networks = await WiFiForIoTPlugin.loadWifiList();
+        setState(() {
+          availableNetworks = networks;
+        });
+      } catch (e) {
+        setState(() {
+          availableNetworks = [];
+        });
+        debugPrint("Error saat memuat daftar WiFi: $e");
+      }
+    } else {
+      setState(() {
+        availableNetworks = [];
+      });
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("WiFi Tidak Aktif"),
+          content:
+              const Text("Silakan aktifkan WiFi untuk mendeteksi perangkat."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,93 +67,58 @@ class HomePage extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            // Layout pertama: Background image
-            // Layout pertama: Background image dengan blur filter
+            // Layout pertama: Background dan Navigasi Atas
             Positioned.fill(
               child: Stack(
                 children: [
                   Container(
                     decoration: const BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage(
-                            'assets/images/background.png'), // Ganti dengan path gambar Anda
+                        image: AssetImage('assets/images/background.png'),
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                   BackdropFilter(
-                    filter: ImageFilter.blur(
-                        sigmaX: 10.0, sigmaY: 10.0), // Efek blur
-                    child: Container(
-                      color: Colors.black
-                          .withOpacity(0.2), // Warna overlay (opsional)
-                    ),
+                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Container(color: Colors.black.withOpacity(0.2)),
                   ),
-                  // Layout pertama: Navigasi atas
-                  SizedBox(
-                    child: Stack(
+                  Positioned(
+                    top: MediaQuery.of(context).size.height * 0.05,
+                    left: 25,
+                    right: 25,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Positioned(
-                          top: MediaQuery.of(context).size.height * 0.05,
-                          left: 25,
-                          right: 25,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomButton(
-                                icon: Icons.history,
-                                label: "Riwayat",
-                                isSelected: false,
-                                onPressed: () {
-                                  // Aksi untuk Riwayat
-                                  Navigator.pushReplacement(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder: (context, animation,
-                                              secondaryAnimation) =>
-                                          HistoryPage(),
-                                      transitionDuration: Duration.zero,
-                                      reverseTransitionDuration: Duration.zero,
-                                      transitionsBuilder: (context, animation,
-                                          secondaryAnimation, child) {
-                                        return child;
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                              CustomButton(
-                                icon: Icons.home,
-                                label: "Beranda",
-                                isSelected: true,
-                                onPressed: () {
-                                  // Aksi untuk Beranda
-                                },
-                              ),
-                              CustomButton(
-                                icon: Icons.person,
-                                label: "Profile",
-                                isSelected: false,
-                                onPressed: () {
-                                  // Aksi untuk pindah ke halaman Home
-                                  Navigator.pushReplacement(
-                                    context,
-                                    PageRouteBuilder(
-                                      pageBuilder: (context, animation,
-                                              secondaryAnimation) =>
-                                          ProfilePage(),
-                                      transitionDuration: Duration.zero,
-                                      reverseTransitionDuration: Duration.zero,
-                                      transitionsBuilder: (context, animation,
-                                          secondaryAnimation, child) {
-                                        return child;
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
+                        CustomButton(
+                          icon: Icons.history,
+                          label: "Riwayat",
+                          isSelected: false,
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HistoryPage()),
+                            );
+                          },
+                        ),
+                        CustomButton(
+                          icon: Icons.home,
+                          label: "Beranda",
+                          isSelected: true,
+                          onPressed: () {},
+                        ),
+                        CustomButton(
+                          icon: Icons.person,
+                          label: "Profil",
+                          isSelected: false,
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfilePage()),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -111,22 +126,20 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             ),
-            // Layout kedua dengan border radius
+            // Layout Kedua dengan Daftar WiFi
             Align(
               alignment: Alignment.bottomCenter,
               child: ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(15)),
                 child: Container(
-                  height:
-                      screenHeight * 0.85, // Layout kedua menempati 85% layar
+                  height: screenHeight * 0.85,
                   color: Colors.white,
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          // Konten di dalam layout kedua
                           Row(
                             children: [
                               const CircleAvatar(
@@ -142,28 +155,21 @@ class HomePage extends StatelessWidget {
                                   Text(
                                     'Baskara Valeandra',
                                     style: TextStyle(
-                                      color: Colors.black,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   Text(
                                     '990818280091273',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                    ),
+                                    style: TextStyle(fontSize: 14),
                                   ),
                                 ],
                               ),
                               const Spacer(),
                               IconButton(
                                 icon: const Icon(
-                                    Icons.notifications_active_outlined,
-                                    color: Colors.black),
-                                onPressed: () {
-                                  // Aksi untuk notifikasi
-                                },
+                                    Icons.notifications_active_outlined),
+                                onPressed: () {},
                               ),
                             ],
                           ),
@@ -173,12 +179,7 @@ class HomePage extends StatelessWidget {
                             height: 50,
                             child: ElevatedButton.icon(
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const ScanQRPage(),
-                                  ),
-                                );
+                                // Aksi QR Code
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
@@ -187,9 +188,8 @@ class HomePage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 side: const BorderSide(
-                                  // Tambahkan properti ini
-                                  color: Colors.red, // Warna border
-                                  width: 0.5, // Lebar border
+                                  color: Colors.red,
+                                  width: 0.5,
                                 ),
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12),
@@ -200,46 +200,51 @@ class HomePage extends StatelessWidget {
                           ),
                           const SizedBox(height: 30),
                           const Align(
-                            alignment: Alignment
-                                .centerLeft, // Pastikan teks berada di kiri
+                            alignment: Alignment.centerLeft,
                             child: Text(
                               'Perangkat Di Sekitar Anda',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
-                              textAlign: TextAlign.left, // Atur text alignment
                             ),
                           ),
                           const SizedBox(height: 16),
-                          // Daftar perangkat
-                          DeviceCard(
-                            deviceName: 'IOTSphere-01',
-                            status: 'Active',
-                            statusColor: Colors.green,
-                            macAddress: '25:dc:n3:j5:l1:B4',
-                            security: 'WPA2',
-                            onTap: () => navigateToDevice1(
-                                context), // Fungsi navigasi untuk perangkat 1
-                          ),
-                          DeviceCard(
-                            deviceName: 'IOTSphere-02',
-                            status: 'Inactive',
-                            statusColor: Colors.red,
-                            macAddress: 'B4:25:dc:n3:j5:l1',
-                            security: 'WPA2',
-                            onTap: () => navigateToDevice2(
-                                context), // Fungsi navigasi untuk perangkat 2
-                          ),
-                          DeviceCard(
-                            deviceName: 'SSID-01',
-                            status: 'Restarting',
-                            statusColor: Colors.orange,
-                            macAddress: '25:ln:n3:j5:lm:3',
-                            security: 'Open',
-                            onTap: () => navigateToDevice3(
-                                context), // Fungsi navigasi untuk perangkat 3
-                          ),
+                          if (availableNetworks.isEmpty)
+                            const Center(
+                              child: Text(
+                                'Tidak ada perangkat WiFi yang terdeteksi.',
+                                style:
+                                    TextStyle(fontSize: 14, color: Colors.grey),
+                              ),
+                            )
+                          else
+                            ...availableNetworks.map((network) {
+                              return DeviceCard(
+                                deviceName: network?.ssid ?? 'Tidak Diketahui',
+                                status: 'Available',
+                                statusColor: Colors.green,
+                                macAddress: network?.bssid ?? 'Tidak Tersedia',
+                                security: network?.capabilities ?? 'Unknown',
+                                level:
+                                    network?.level ?? 0, // Pass signal strength
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DeviceInfoPage(
+                                        deviceName:
+                                            network?.ssid ?? 'Tidak Diketahui',
+                                        macAddress:
+                                            network?.bssid ?? 'Tidak Tersedia',
+                                        level: network?.level ??
+                                            0, // Pass signal strength
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList(),
                         ],
                       ),
                     ),
@@ -252,39 +257,6 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-void navigateToDevice1(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => const DeviceInfoPage(
-        deviceName: 'IOTSphere-01',
-      ),
-    ),
-  );
-}
-
-void navigateToDevice2(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => const DeviceInfoPage(
-        deviceName: 'IOTSphere-02',
-      ),
-    ),
-  );
-}
-
-void navigateToDevice3(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => const DeviceInfoPage(
-        deviceName: 'SSID-01',
-      ),
-    ),
-  );
 }
 
 // Widget CustomButton
@@ -343,6 +315,7 @@ class DeviceCard extends StatelessWidget {
   final Color statusColor;
   final String macAddress;
   final String security;
+  final int level; // Add this to hold the signal strength
   final VoidCallback onTap;
 
   const DeviceCard({
@@ -352,6 +325,7 @@ class DeviceCard extends StatelessWidget {
     required this.statusColor,
     required this.macAddress,
     required this.security,
+    required this.level, // Accept the signal strength
     required this.onTap, // Tambahkan onTap sebagai parameter wajib
   });
 
@@ -399,6 +373,14 @@ class DeviceCard extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       macAddress,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Signal Strength: ${level}dBm', // Show signal strength
                       style: const TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
